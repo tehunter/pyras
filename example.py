@@ -142,25 +142,25 @@ print('')
 #print('')
 
 #%% Edit Add (Controller Class)
-res = rc.Edit_AddBC('Beaver Creek', 'Kentwood', '5.691')
-print('Edit_AddBC')
-print(res)
-print('')
-
-res = rc.Edit_AddIW('Beaver Creek', 'Kentwood', '5.692')
-print('Edit_AddIW')
-print(res)
-print('')
-
-res = rc.Edit_AddLW('Beaver Creek', 'Kentwood', '5.693')
-print('Edit_AddLW')
-print(res)
-print('')
-
-res = rc.Edit_AddXS('Beaver Creek', 'Kentwood', '5.694')
-print('Edit_AddXS')
-print(res)
-print('')
+#res = rc.Edit_AddBC('Beaver Creek', 'Kentwood', '5.691')
+#print('Edit_AddBC')
+#print(res)
+#print('')
+#
+#res = rc.Edit_AddIW('Beaver Creek', 'Kentwood', '5.692')
+#print('Edit_AddIW')
+#print(res)
+#print('')
+#
+#res = rc.Edit_AddLW('Beaver Creek', 'Kentwood', '5.693')
+#print('Edit_AddLW')
+#print(res)
+#print('')
+#
+#res = rc.Edit_AddXS('Beaver Creek', 'Kentwood', '5.694')
+#print('Edit_AddXS')
+#print(res)
+#print('')
 
 # %% Edit (Controller Class)
 

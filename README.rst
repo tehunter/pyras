@@ -1,9 +1,9 @@
 .. image:: https://pypip.in/version/PyRAS/badge.svg
-   :target: https://pypi.python.org/pypi/QtAwesome/
+   :target: https://pypi.python.org/pypi/PyRAS/
    :alt: Latest PyPI version
 
 .. image:: https://pypip.in/download/PyRAS/badge.svg
-   :target: https://pypi.python.org/pypi/QtAwesome/
+   :target: https://pypi.python.org/pypi/PyRAS/
    :alt: Number of PyPI downloads
 
 .. image:: https://pypip.in/py_versions/PyRAS/badge.svg
