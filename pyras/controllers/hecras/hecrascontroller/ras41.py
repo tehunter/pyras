@@ -82,6 +82,7 @@ class Controller(object):
         -----
         For WAT only.
         """
+        raise NotImplementedError
         rc = self._rc
         res = rc.Compute_WATPlan()
         return res
@@ -102,6 +103,7 @@ class Controller(object):
         -----
         For WT only.
         """
+        raise NotImplementedError
         rc = self._rc
         res = rc.Create_WATPlanName(HECRASBasePlanName, SimulationName)
         return res
@@ -540,6 +542,7 @@ class Controller(object):
         results to export, types of geometric data to export, etc.) have
         already been set in the Editor and only wirtes the *.sdf export file.
         """
+        raise NotImplementedError
         rc = self._rc
         rc.ExportGIS()
 
@@ -573,6 +576,7 @@ class Controller(object):
         are imported. Note the misspelling "Geometerey"in the name of this
         method.
         """
+        raise NotImplementedError
         rc = self._rc
         rc.Geometery_GISImport(title, Filename)
 
@@ -611,10 +615,10 @@ class Controller(object):
         geomfilename : str
             The name of the geometry file.
         """
-        # FIXME: Not working
+        raise NotImplementedError
         rc = self._rc
         res = rc.Geometry_GetGML(geomfilename)
-        return 
+        return res
 
     def Geometry_GetNode(self, riv, rch, rs):
         """Returns the node ID of a selected node.
@@ -855,6 +859,7 @@ class Controller(object):
 
         DSSPathnames : list of str
         """
+        raise NotImplementedError
         rc = self._rc
         errmsg = ''
         LocationDesciptions = []
@@ -877,6 +882,7 @@ class Controller(object):
         -------
         int
         """
+        raise NotImplementedError
         rc = self._rc
         errmsg = ''
         res = rc.GetDataLocations_Input_count(PlanTitle, errmsg)
@@ -900,6 +906,7 @@ class Controller(object):
         DSSPathnames : list of str
             The list of DSS Pathnames.
         """
+        raise NotImplementedError
         rc = self._rc
         errmsg = ''
         DSSFiles = []
@@ -920,12 +927,12 @@ class Controller(object):
         -------
         int
         """
+        raise NotImplementedError
         rc = self._rc
         errmsg = ''
         res = rc.GetDataLocations_Output_count(PlanTitle, errmsg)
 
         return res
-
 
     # %% Versions
     def GetRASVersion(self):
@@ -965,6 +972,7 @@ class Controller(object):
         -----
         This adds a map, but does not turn it on.
         """
+        raise NotImplementedError
         rc = self._rc
         rc.Map_Add(Filename)
 
@@ -972,6 +980,7 @@ class Controller(object):
     def Output_ComputationLevel_Export(self):
         """
         """
+        raise NotImplementedError
 
     def Output_GetNode(self, riv, reach, rs):
         """
@@ -997,6 +1006,7 @@ class Controller(object):
         the output file, so a *.O## file is requires (i.e. run computations
         first).
         """
+        raise NotImplementedError
         rc = self._rc
         res = rc.Output_GetNode(riv, reach, rs)
 
@@ -1005,54 +1015,67 @@ class Controller(object):
     def Output_GetNodes(self):
         """
         """
+        raise NotImplementedError
 
     def Output_GetProfiles(self):
         """
         """
+        raise NotImplementedError
 
     def Output_GetReach(self):
         """
         """
+        raise NotImplementedError
 
     def Output_GetReaches(self):
         """
         """
+        raise NotImplementedError
 
     def Output_GetRiver(self):
         """
         """
+        raise NotImplementedError
 
     def Output_GetRivers(self):
         """
         """
+        raise NotImplementedError
 
     def Output_Initialize(self):
         """
         """
+        raise NotImplementedError
 
     def Output_NodeOutput(self):
         """
         """
+        raise NotImplementedError
 
     def Output_ReachOutput(self):
         """
         """
+        raise NotImplementedError
 
     def Output_Variables(self):
         """
         """
+        raise NotImplementedError
 
     def Output_VelDist(self):
         """
         """
+        raise NotImplementedError
 
     def OutputDSS_GetStageFlow(self):
         """
         """
+        raise NotImplementedError
 
     def OutputDSS_GetStageFlowSA(self):
         """
         """
+        raise NotImplementedError
 
     # %% Plan
     def Plan_GetFilename(self, planName):
@@ -1069,6 +1092,7 @@ class Controller(object):
         str
             Plan file and path
         """
+        raise NotImplementedError
         rc = self._rc
         res = rc.Plan_GetFilename(planName)
         return res
@@ -1089,6 +1113,7 @@ class Controller(object):
         PlanNames : list of str
             The list of plan names.
         """
+        raise NotImplementedError
         rc = self._rc
         res = rc.Plan_GetFilename(PlanCount, PlanNames,
                                   IncludeOnlyPlansInBaseDirectory)
@@ -1105,6 +1130,7 @@ class Controller(object):
         ReportNames : list of str
             The list of plan reports.
         """
+        raise NotImplementedError
         rc = self._rc
         ReportCount, ReportNames = [], []
         res = rc.Plan_GetFilename(ReportCount, ReportNames)
@@ -1124,6 +1150,7 @@ class Controller(object):
         ------
         bool
         """
+        raise NotImplementedError
         rc = self._rc
         res = rc.Plan_SetCurrent(PlanTitleToSet)
 
@@ -1156,6 +1183,7 @@ class Controller(object):
         continue with run-time. Otherwise the RAS "Current Plan"window opens
         and closes quickly.
         """
+        raise NotImplementedError
         rc = self._rc
         errmsg = ''
         res = rc.Plan_SetCurrent(PlanTitleToCheck, ShowMessageList, errmsg)
@@ -1181,6 +1209,7 @@ class Controller(object):
         not change the current plan, nly changes the output file that is
         displayed in the output tables and plots.
         """
+        raise NotImplementedError
         rc = self._rc
         res = rc.Plan_SetCurrent(PlanTitleToSet)
 
@@ -1214,6 +1243,7 @@ class Controller(object):
         The method plan_Naes returns a 1-based array so it must be converted to
         0-based, prior to calling PlanOutput_SetMultiple.
         """
+        raise NotImplementedError
 
     # %% Plot
     def PlotHydraulicTables(self, river, reach, rs):
@@ -1230,6 +1260,7 @@ class Controller(object):
         rs : str
             The river station.
         """
+        raise NotImplementedError
         rc = self._rc
         rc.PlotHydraulicTables(river, reach, rs)
 
@@ -1248,6 +1279,7 @@ class Controller(object):
         -----
         Must have an output file for this to work.
         """
+        raise NotImplementedError
         rc = self._rc
         rc.PlotPF(river, reach)
 
@@ -1266,6 +1298,7 @@ class Controller(object):
         -----
         Must have an output file for this to work.
         """
+        raise NotImplementedError
         rc = self._rc
         rc.PlotPFGeneral(river, reach)
 
@@ -1286,6 +1319,7 @@ class Controller(object):
         -----
         Must have an output file for this to work.
         """
+        raise NotImplementedError
         rc = self._rc
         rc.PlotRatingCurve(river, reach)
 
@@ -1307,6 +1341,7 @@ class Controller(object):
         -----
         For unsteady plans only. Must have an output file for this to work.
         """
+        raise NotImplementedError
         rc = self._rc
         rc.PlotStageFlow(river, reach, rs)
 
@@ -1321,6 +1356,7 @@ class Controller(object):
         therefore the storage area name has to be hard coded, read from a file,
         or retrieved interactively during run-time.
         """
+        raise NotImplementedError
         rc = self._rc
         rc.PlotStageFlow_SA(SAName)
 
@@ -1338,6 +1374,7 @@ class Controller(object):
         rs : str
             The river station.
         """
+        raise NotImplementedError
         rc = self._rc
         rc.PlotXS(river, reach, rs)
 
@@ -1352,6 +1389,7 @@ class Controller(object):
         reach : str
             The reach name.
         """
+        raise NotImplementedError
         rc = self._rc
         rc.PlotXYZ(river, reach)
 
@@ -1374,6 +1412,7 @@ class Controller(object):
         Filename : str
             Full path of the new HEC-RAS project.
         """
+        raise NotImplementedError
         rc = self._rc
 
         # Check relative path to script
@@ -1422,6 +1461,7 @@ class Controller(object):
         newProjectName : str
             Path and file name of the HEC-RAS project to save as.
         """
+        raise NotImplementedError
         rc = self._rc
         fullpath = osp.abspath(newProjectName)
         rc.Project_SaveAs(fullpath)
@@ -1588,6 +1628,7 @@ class Controller(object):
         DSSPathnames : str
 
         """
+        raise NotImplementedError
         rc = self._rc
         errmsg = ''
         res = rc.SetDataLocations(PlanTitle, count, LocationDesciptions,
@@ -1622,6 +1663,7 @@ class Controller(object):
         -----
         Fr steady flow plans only.
         """
+        raise NotImplementedError
         rc = self._rc
         rc.SteadyFlow_ClearFlowData()
 
@@ -1646,6 +1688,7 @@ class Controller(object):
         For steady flow plans only. The WSElev list contains fixed water
         surface elevations for each profile in the active plan's flow file.
         """
+        raise NotImplementedError
         rc = self._rc
         rc.SteadyFlow_FixedWSBoundary(river, reach, Downstream, WSElev)
 
@@ -1684,6 +1727,7 @@ class Controller(object):
         the flow table, it will added. Need to first determine the number of
         profiles to set up the item count in the Flow array.
         """
+        raise NotImplementedError
         rc = self._rc
         res = rc.SteadyFlow_SetFlow(river, reach, rs, Flow)
 
@@ -1699,6 +1743,7 @@ class Controller(object):
         reach : str
             The reach name.
         """
+        raise NotImplementedError
         rc = self._rc
         res = rc.TablePF(river, reach)
 
@@ -1716,6 +1761,7 @@ class Controller(object):
         rs : str
             The river station.
         """
+        raise NotImplementedError
         rc = self._rc
         res = rc.TableXS(river, reach, rs)
 
@@ -1744,6 +1790,7 @@ class Controller(object):
         The time interval in the TS Gate Opening boundary condition is set to 1
         year.
         """
+        raise NotImplementedError
         rc = self._rc
         errmsg = ''
         res = rc.UnsteadyFlow_SetGateOpening_Constant(river, reach, rs,

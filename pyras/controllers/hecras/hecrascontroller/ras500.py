@@ -79,6 +79,7 @@ class Controller(ras41.Controller):
         -------
         str
         """
+        raise NotImplementedError
         rc = self._rc
         res = rc.Geometry_BreachParamGetXML()
         return res
@@ -91,6 +92,7 @@ class Controller(ras41.Controller):
         ----------
         xmlText : str
         """
+        raise NotImplementedError
         rc = self._rc
         rc.Geometry_BreachParamSetXML(xmlText)
 
@@ -115,6 +117,7 @@ class Controller(ras41.Controller):
             The ratio ti apply to the Manning's n values in the range of cross
             sections.
         """
+        raise NotImplementedError
         rc = self._rc
         errmsg = ''
         res = rc.Geometry_RatioMann(riv, rchUp, nUp, rchDn, nDn, ratio, errmsg)
@@ -133,13 +136,6 @@ class Controller(ras41.Controller):
         raise NotImplementedError(error)
 
     def GetDataLocations_Output_count(self):
-        """ """
-        error = self._error
-        raise NotImplementedError(error)
-
-    # %%
-    @property
-    def mGeometry(self):
         """ """
         error = self._error
         raise NotImplementedError(error)
