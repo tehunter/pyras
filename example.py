@@ -4,14 +4,14 @@
 """
 from pyras.controllers.hecras import HECRASController, kill_all
 
-project = r'examples\Steady Examples\BEAVCREK.prj'
-#project = r'examples\Unsteady Examples\NavigationDam\ROCK_TEST.prj'
+project = r'temp_examples\Steady Examples\BEAVCREK.prj'
+#project = r'temp_examples\Unsteady Examples\NavigationDam\ROCK_TEST.prj'
 
 
-#rc = HECRASController('RAS41')
-rc = HECRASController('RAS500')
+rc = HECRASController('RAS41')
+#rc = HECRASController('RAS500')
 
-#rc.ShowRas()
+rc.ShowRas()
 
 # %% Project
 rc.Project_Open(project)
@@ -23,10 +23,10 @@ print('')
 
 #rc.Compute_HideComputationWindow()
 #rc.Compute_ShowComputationWindow()
-res = rc.Compute_CurrentPlan()
-print('Compute_CurrentPlan:')
-print(res)
-print('')
+#res = rc.Compute_CurrentPlan()
+#print('Compute_CurrentPlan:')
+#print(res)
+#print('')
 
 #res = rc.Compute_Cancel()
 #print('\nCompute_Cancel', res)
@@ -140,6 +140,27 @@ print('')
 #print('NodeCType')
 #print(res)
 #print('')
+
+#%% Edit Add (Controller Class)
+res = rc.Edit_AddBC('Beaver Creek', 'Kentwood', '5.691')
+print('Edit_AddBC')
+print(res)
+print('')
+
+res = rc.Edit_AddIW('Beaver Creek', 'Kentwood', '5.692')
+print('Edit_AddIW')
+print(res)
+print('')
+
+res = rc.Edit_AddLW('Beaver Creek', 'Kentwood', '5.693')
+print('Edit_AddLW')
+print(res)
+print('')
+
+res = rc.Edit_AddXS('Beaver Creek', 'Kentwood', '5.694')
+print('Edit_AddXS')
+print(res)
+print('')
 
 # %% Edit (Controller Class)
 

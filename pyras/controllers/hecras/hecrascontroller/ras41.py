@@ -29,8 +29,9 @@ class Controller(object):
         nmsg = None
         msg = None
         res = rc.Compute_CurrentPlan(nmsg, msg)
-        print(res, nmsg, msg)
-        return res
+        print(res)
+        success, nmsg, msg = res
+        return success
 
     def Compute_HideComputationWindow(self):
         """
@@ -179,7 +180,7 @@ class Controller(object):
         return res
 
     # %% Edit Add
-    def Edit_AddBC(self, river, reach, rs):
+    def Edit_AddBC(self, river, reach, rs, close=True):
         """
         Add a bridge/culvert.
 
@@ -190,7 +191,9 @@ class Controller(object):
         reach : str
             The reach name  to add the bridge/culvert to.
         rs : str
-            The river station of the new bridge/culvert .
+            The river station of the new bridge/culvert.
+        block : bool (False)
+            Call Edit_XS and closes it automatically (Python wrapper only)
 
         Notes
         -----
@@ -206,8 +209,10 @@ class Controller(object):
         errmsg = ''
         res = rc.Edit_AddBC(river, reach, rs, errmsg)
         river, reach, rs, errmsg = res
+        self.Edit_BC(river, reach, rs, close=close)
+        return errmsg
 
-    def Edit_AddIW(self, river, reach, rs):
+    def Edit_AddIW(self, river, reach, rs, close=True):
         """
         Add a inline structure section.
 
@@ -219,6 +224,8 @@ class Controller(object):
             The reach name  to add the inline structure to.
         rs : str
             The river station of the new inline structure.
+        block : bool (False)
+            Call Edit_XS and closes it automatically (Python wrapper only)
 
         Notes
         -----
@@ -234,8 +241,10 @@ class Controller(object):
         errmsg = ''
         res = rc.Edit_AddIW(river, reach, rs, errmsg)
         river, reach, rs, errmsg = res
+        self.Edit_IW(river, reach, rs, close=close)
+        return errmsg
 
-    def Edit_AddLW(self, river, reach, rs):
+    def Edit_AddLW(self, river, reach, rs, close=True):
         """
         Add a lateral structure.
 
@@ -247,6 +256,8 @@ class Controller(object):
             The reach name  to add the lateral structure to.
         rs : str
             The river station of the new lateral structure.
+        block : bool (False)
+            Call Edit_XS and closes it automatically (Python wrapper only)
 
         Notes
         -----
@@ -262,8 +273,10 @@ class Controller(object):
         errmsg = ''
         res = rc.Edit_AddLW(river, reach, rs, errmsg)
         river, reach, rs, errmsg = res
+        self.Edit_LW(river, reach, rs, close=close)
+        return errmsg
 
-    def Edit_AddXS(self, river, reach, rs):
+    def Edit_AddXS(self, river, reach, rs, close=True):
         """
         Add a cross section.
 
@@ -275,6 +288,8 @@ class Controller(object):
             The reach name  to add the cross section to.
         rs : str
             The river station of the new cross setion.
+        block : bool (False)
+            Call Edit_XS and closes it automatically (Python wrapper only)
 
         Notes
         -----
@@ -290,9 +305,11 @@ class Controller(object):
         errmsg = ''
         res = rc.Edit_AddXS(river, reach, rs, errmsg)
         river, reach, rs, errmsg = res
+        self.Edit_XS(river, reach, rs, close=close)
+        return errmsg
 
     # %% Edit
-    def Edit_BC(self, river, reach, rs):
+    def Edit_BC(self, river, reach, rs, close=False):
         """
         Opens the Bridge/Culvert Editor and displays the selected river
         station.
@@ -305,6 +322,8 @@ class Controller(object):
             The reach name of the bridge/culvert to edit.
         rs : str
             The river station of the bridge/culvert to edit.
+        block : bool (False)
+            Call Edit_XS and closes it automatically (Python wrapper only)
 
         Notes
         -----
@@ -313,7 +332,7 @@ class Controller(object):
         """
         rc = self._rc
         rc.Edit_BC(river, reach, rs)
-        self._runtime.pause_bc()
+        self._runtime.pause_bc(close)
 
     def Edit_GeometricData(self):
         """
@@ -328,7 +347,7 @@ class Controller(object):
         rc.Edit_GeometricData()
         self._runtime.pause_geo()
 
-    def Edit_IW(self, river, reach, rs):
+    def Edit_IW(self, river, reach, rs, close=False):
         """
         Opens the Inline Structure Editor and displays the selected river
         station.
@@ -341,6 +360,8 @@ class Controller(object):
             The reach name of the inline structure to edit.
         rs : str
             The river station of the inline structure to edit.
+        block : bool (False)
+            Call Edit_XS and closes it automatically (Python wrapper only)
 
         Notes
         -----
@@ -349,9 +370,9 @@ class Controller(object):
         """
         rc = self._rc
         rc.Edit_LW(river, reach, rs)
-        self._runtime.pause_iw()
+        self._runtime.pause_iw(close)
 
-    def Edit_LW(self, river, reach, rs):
+    def Edit_LW(self, river, reach, rs, close=False):
         """
         Opens the Lateral Structure Editor and displays the selected river
         station.
@@ -364,6 +385,8 @@ class Controller(object):
             The reach name of the lateral structure to edit.
         rs : str
             The river station of the lateral structure to edit.
+        block : bool (False)
+            Call Edit_XS and closes it automatically (Python wrapper only)
 
         Notes
         -----
@@ -372,7 +395,7 @@ class Controller(object):
         """
         rc = self._rc
         rc.Edit_LW(river, reach, rs)
-        self._runtime.pause_lw()
+        self._runtime.pause_lw(close)
 
     def Edit_MultipleRun(self):
         """
@@ -480,7 +503,7 @@ class Controller(object):
         rc.Edit_WaterQualityData()
         self._runtime.pause_quality()
 
-    def Edit_XS(self, river, reach, rs):
+    def Edit_XS(self, river, reach, rs, close=False):
         """
         Opens the Cross Section Editor and displays the selected cross section.
 
@@ -492,6 +515,8 @@ class Controller(object):
             The reach name of the cross section.
         rs : str
             The river station of the cross section.
+        block : bool (False)
+            Call Edit_XS and closes it automatically (Python wrapper only)
 
         Notes
         -----
@@ -499,8 +524,8 @@ class Controller(object):
         Once the Cross Section Editor is closed, run-time resumes.
         """
         rc = self._rc
-        res = rc.Edit_XS(river, reach, rs)
-        self._runtime.pause_xs()
+        rc.Edit_XS(river, reach, rs)
+        self._runtime.pause_xs(close)
 
     # %% Export
     def ExportGIS(self):
