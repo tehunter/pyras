@@ -46,30 +46,7 @@ Current support includes version 4.1.0 and 5.0.0.
 
 Installation
 ------------
-The following would be the eventual way of installing (not working right now): 
-
-**The easy way:**
-
-1. Install the anaconda distribution 
-
-2. On the command line type:
-
-.. code-block:: python
-
-	pip install pyras
-
-**The hard way:**
-
-1. Install python
-
-2. Download pywin32 installer from the `project webpage`_  and install.
-
-3. On the command line type:
-
-.. code-block:: python
-
-	pip install pyras
-
+PyRAS is currently under development until it reaches a minimum stable version. 
 	
 License
 -------
