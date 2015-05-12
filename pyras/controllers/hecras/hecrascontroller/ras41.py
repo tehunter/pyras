@@ -29,8 +29,8 @@ class Controller(object):
         nmsg = None
         msg = None
         res = rc.Compute_CurrentPlan(nmsg, msg)
-        print(res)
         success, nmsg, msg = res
+
         return success
 
     def Compute_HideComputationWindow(self):
@@ -194,7 +194,7 @@ class Controller(object):
             The reach name  to add the bridge/culvert to.
         rs : str
             The river station of the new bridge/culvert.
-        block : bool (False)
+        close : bool (False)
             Call Edit_XS and closes it automatically (Python wrapper only)
 
         Notes
@@ -226,7 +226,7 @@ class Controller(object):
             The reach name  to add the inline structure to.
         rs : str
             The river station of the new inline structure.
-        block : bool (False)
+        close : bool (False)
             Call Edit_XS and closes it automatically (Python wrapper only)
 
         Notes
@@ -258,7 +258,7 @@ class Controller(object):
             The reach name  to add the lateral structure to.
         rs : str
             The river station of the new lateral structure.
-        block : bool (False)
+        close : bool (False)
             Call Edit_XS and closes it automatically (Python wrapper only)
 
         Notes
@@ -290,7 +290,7 @@ class Controller(object):
             The reach name  to add the cross section to.
         rs : str
             The river station of the new cross setion.
-        block : bool (False)
+        close : bool (False)
             Call Edit_XS and closes it automatically (Python wrapper only)
 
         Notes
@@ -324,7 +324,7 @@ class Controller(object):
             The reach name of the bridge/culvert to edit.
         rs : str
             The river station of the bridge/culvert to edit.
-        block : bool (False)
+        close : bool (False)
             Call Edit_XS and closes it automatically (Python wrapper only)
 
         Notes
@@ -362,7 +362,7 @@ class Controller(object):
             The reach name of the inline structure to edit.
         rs : str
             The river station of the inline structure to edit.
-        block : bool (False)
+        close : bool (False)
             Call Edit_XS and closes it automatically (Python wrapper only)
 
         Notes
@@ -387,7 +387,7 @@ class Controller(object):
             The reach name of the lateral structure to edit.
         rs : str
             The river station of the lateral structure to edit.
-        block : bool (False)
+        close : bool (False)
             Call Edit_XS and closes it automatically (Python wrapper only)
 
         Notes
@@ -517,7 +517,7 @@ class Controller(object):
             The reach name of the cross section.
         rs : str
             The river station of the cross section.
-        block : bool (False)
+        close : bool (False)
             Call Edit_XS and closes it automatically (Python wrapper only)
 
         Notes
@@ -530,10 +530,20 @@ class Controller(object):
         self._runtime.pause_xs(close)
 
     # %% Export
-    def ExportGIS(self):
+    def ExportGIS(self, filename=None):
         """
         Export HEC-RAS results to an *.sdf export file that can be read into
         GIS using HEC-GeoRAS.
+
+        Parameters
+        ----------
+        filename : str (optional)
+            TODO: This might enhance the experience...
+
+        Returns
+        -------
+        str
+            Location whre the file was generated and stored.
 
         Notes
         -----
@@ -541,10 +551,19 @@ class Controller(object):
         HECRASController uses whatever user inputs (i.e. profiles to export,
         results to export, types of geometric data to export, etc.) have
         already been set in the Editor and only wirtes the *.sdf export file.
+
+        Python: this method returns the location of the file (unlike VBA)
         """
-        raise NotImplementedError
+        suffix = '.RASexport.sdf'
+        path, fname_project = osp.split(self.CurrentProjectFile())
+        fname_project = fname_project.split('.')[0]
+        fname_gis = fname_project + suffix
+        fullpath = osp.join(path, fname_gis)
+
         rc = self._rc
         rc.ExportGIS()
+
+        return fullpath
 
     # %% Geometry
     def Geometry(self):
@@ -676,10 +695,12 @@ class Controller(object):
             river/reach.
         """
         rc = self._rc
+
         geo = self.Geometry()
         nRS = geo.nNode(riv, rch)
         rs = (float('nan'),)*(nRS + 1)
         NodeType = (float('nan'),)*(nRS + 1)
+
         res = rc.Geometry_GetNodes(riv, rch, nRS, rs, NodeType)
         riv, rch, nRS, rs, NodeType = res
 
@@ -1047,10 +1068,43 @@ class Controller(object):
         """
         raise NotImplementedError
 
-    def Output_NodeOutput(self):
-        """
-        """
-        raise NotImplementedError
+    def Output_NodeOutput(self, riv, rch, n, updn, prof, nVar):
+         """
+        Returns an output value for a given node and profile.
+        
+        Parameters
+        ----------
+        riv : int
+            The river ID number.
+        rch : int
+            The reach ID number.
+        n : int
+            The node ID number.
+        updn: int
+            0 for upstream section, 1 for BR UP, 2 for BR DOWN.
+            All other integers return output for BR UP.  Only 
+            applies to nodes that have an upstream and downstream
+            section, like bridges, culverts and multiple openings.
+            For all other nodes, user can use any long integer
+            number, makes no difference.
+        prof: int
+            The profile ID number.
+        nVar: int
+            The variable ID.
+         """
+#        nValue = 0
+#        ValueDateTime = None
+#        Stage = None
+#        Flow = None
+#        errmsg = None
+#
+#        rc = self._rc
+#        # [2:] First 2 results are not documented.
+#        # True/False and Name of Storage Areas
+#        res = rc.OutputDSS_GetStageFlowSA(StorageArea, nValue, ValueDateTime,
+#                                          Stage, Flow, errmsg)[2:]
+
+#        return res
 
     def Output_ReachOutput(self):
         """
@@ -1072,10 +1126,41 @@ class Controller(object):
         """
         raise NotImplementedError
 
-    def OutputDSS_GetStageFlowSA(self):
+    def OutputDSS_GetStageFlowSA(self, StorageArea):
         """
+        Returns stage and flow for every hydrograph output interval for a 
+        storage area.
+        
+        Parameters
+        ----------
+        StorageArea : string
+            The storage area name. 
+
+        Returns
+        -------
+        nValue: int
+            The number of hydrograph outputs
+        ValueDateTime(): float
+            The array of date/times in Julien format.
+        Stage(): float
+            The array of stage values.
+        Flow(): float
+            The array of flow values.
+        errmsg: str
+            An error message returned if something goes wrong with getting 
+            output.
+
+        Notes
+        -----
+        The output value that is returned is for the HEC-RAS variable
+        ID number, nVar. Variables numbers are defined in Appendix E.       
         """
-        raise NotImplementedError
+#        rc = self._rc
+#        # First 2 results are not documented.  
+#        # True/False and Name of Storage Areas
+#        res = rc.OutputDSS_GetStageFlowSA(StorageArea)[2:] 
+
+        return res
 
     # %% Plan
     def Plan_GetFilename(self, planName):
@@ -1260,9 +1345,9 @@ class Controller(object):
         rs : str
             The river station.
         """
-        raise NotImplementedError
         rc = self._rc
         rc.PlotHydraulicTables(river, reach, rs)
+        self._runtime.pause_text('View Hydraulic Property Tables')
 
     def PlotPF(self, river, reach):
         """
@@ -1761,7 +1846,7 @@ class Controller(object):
         rs : str
             The river station.
         """
-        raise NotImplementedError
+#        raise NotImplementedError
         rc = self._rc
         res = rc.TableXS(river, reach, rs)
 
@@ -1824,7 +1909,7 @@ class RASEvents:
         called repeatedly once Compute_CurrentPlan is called and thorugh the
         duration of the HEC-RAS Computations.
 
-        Python: this events do not work with win32com
+        Python: this event do not work with win32com
         """
         print(Progress)
         return Progress
@@ -1846,7 +1931,7 @@ class RASEvents:
         is called repeatedly once Compute_CurrentPlan is called and thorugh the
         duration of the HEC-RAS Computations.
 
-        Python: this events do not work with win32com
+        Python: this event do not work with win32com
         """
         print(msg)
         return msg

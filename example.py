@@ -2,24 +2,37 @@
 """
 
 """
-from pyras.controllers.hecras import HECRASController, kill_all
+import os 
+
+#os.environ['RAS_CONTROLLER_VERSION'] = 'RAS41'
+os.environ['RAS_CONTROLLER_VERSION'] = 'RAS500'
+
+from pyras.controllers import HECRASController, kill_ras
 
 project = r'temp_examples\Steady Examples\BEAVCREK.prj'
+project = r'D:\Users\penac1\Dropbox (Personal)\it\repos\git\pyras\temp_examples\Steady Examples\BEAVCREK.prj'
 #project = r'temp_examples\Unsteady Examples\NavigationDam\ROCK_TEST.prj'
 
+#rc = HECRASController()
 
-rc = HECRASController('RAS41')
-#rc = HECRASController('RAS500')
+#rc.ShowRas()
 
-rc.ShowRas()
+
+with HECRASController(project) as rc:
+    res = rc.Project_Current()
+    print('Project_Current:')
+    print(res)
+    print('')
+    rc.pause(10)
+
 
 # %% Project
-rc.Project_Open(project)
+#rc.Project_Open(project)
 
-res = rc.Project_Current()
-print('Project_Current:')
-print(res)
-print('')
+#res = rc.Project_Current()
+#print('Project_Current:')
+#print(res)
+#print('')
 
 #rc.Compute_HideComputationWindow()
 #rc.Compute_ShowComputationWindow()
@@ -213,6 +226,12 @@ print('')
 #print('')
 
 # %% Geometry (Controller Class)
+#res = rc.ExportGIS()
+#print('ExportGIS')
+#print(res)
+#print('')
+
+# %% Geometry (Controller Class)
 
 # Not tested
 #res = rc.Geometery_GISImport(self, title, Filename)
@@ -270,7 +289,7 @@ print('')
 #print('')
 
 # %% Get (Controller Class)
-res = rc.GetRASVersion()
+#res = rc.GetRASVersion()
 #print('GetRASVersion')
 #print(res)
 #print('')
@@ -278,6 +297,12 @@ res = rc.GetRASVersion()
 #res = rc.HECRASVersion()
 #print('HECRASVersion', res)
 #print(res)
+#print('')
+
+# %% Plot
+
+#rc.PlotHydraulicTables('Beaver Creek', 'Kentwood', '5.99')
+#print('PlotHydraulicTables', res)
 #print('')
 
 # %% Schematic (Controller Class)
@@ -311,5 +336,5 @@ res = rc.GetRASVersion()
 #print(res)
 #print('')
 
-rc.close()
-kill_all()
+#rc.close()
+#kill_all()

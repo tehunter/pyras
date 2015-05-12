@@ -14,7 +14,7 @@ def get_supported_versions():
     return ['RAS500', 'RAS41']  # Order gives the priority
 
 
-def kill_all():
+def kill_ras():
     """ """
     import os
     import subprocess
@@ -171,16 +171,33 @@ def _get_registered_typelibs(match='HEC River Analysis System'):
     return result
 
 
+class HECRASImportError(Exception):
+    def __init__(self, message=''):
+        msg = '"HEC River Analysis System" type library not found. ' \
+              'Please install HEC-RAS'
+        if message:
+            msg = message
+
+        # Call the base class constructor with the parameters it needs
+        super(HECRASImportError, self).__init__(msg)    
+
+
 # %%
-kill_all()
+kill_ras()
 __available_versions__ = get_available_versions()
 
 
+env_ras_version = os.environ.get('RAS_CONTROLLER_VERSION', None)
+
 if len(__available_versions__) > 0:
-    for ras_version in get_supported_versions():
-        if ras_version in __available_versions__:
-            os.environ['RAS_CONTROLLER_VERSION'] = ras_version
-            break
+    if env_ras_version is None:
+        for ras_version in get_supported_versions():
+            if ras_version in __available_versions__:
+                os.environ['RAS_CONTROLLER_VERSION'] = ras_version
+                break
+    else:
+        if env_ras_version not in get_supported_versions():
+            raise HECRASImportErrorException()
 
     from .hecrascontroller import HECRASController
 
@@ -192,6 +209,4 @@ if len(__available_versions__) > 0:
     globals().pop('runtime')
     globals().pop('os')
 else:
-    error = '"HEC River Analysis System" type library not found. ' \
-            'Please install HEC-RAS'
-    raise Exception(error)
+    raise HECRASImportErrorException()

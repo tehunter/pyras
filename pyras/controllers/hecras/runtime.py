@@ -89,6 +89,9 @@ class Runtime(object):
         """ """
         time.sleep(time_seconds)
 
+    def pause_text(self, window_text=None, close=False):
+        self._pause(window_text, close)
+
     def _pause(self, window_text=None, close=False):
         """ """
         def enumHandler(hwnd, lParam):
