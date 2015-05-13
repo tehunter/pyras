@@ -20,6 +20,7 @@ class ControllerAdded(object):
         Compute_CurrentPlan is set to False.
         """
         rc = self._rc
+
         return rc.Compute_Complete()
 
     def Compute_CurrentPlan(self, BlockingMode=True):
@@ -42,6 +43,7 @@ class ControllerAdded(object):
         Msg = None
         res = rc.Compute_CurrentPlan(nmsg, Msg, BlockingMode)
         success, nmsg, Msg, other = res
+
         return success
 
     def Compute_StartedFromController(self):
@@ -59,6 +61,7 @@ class ControllerAdded(object):
         """
         rc = self._rc
         res = rc.Compute_StartedFromController
+
         return res
 
     # %% Geometry
@@ -112,7 +115,7 @@ class ControllerAdded(object):
         raise NotImplementedError
         rc = self._rc
         errmsg = ''
-        res = rc.Geometry_RatioMann(riv, rchUp, nUp, rchDn, nDn, ratio, errmsg)
+        rc.Geometry_RatioMann(riv, rchUp, nUp, rchDn, nDn, ratio, errmsg)
 
         return errmsg
 
@@ -126,7 +129,8 @@ class ControllerAdded(object):
         -------
         str
         """
-        error = self._error
+        error = 'Not available. Will be for Monte Carlo Analysis in future' + \
+                'versions of HEC-RAS.'
         raise NotImplementedError(error)
 
     def Plan_InformationXML(self):
@@ -138,7 +142,8 @@ class ControllerAdded(object):
         -------
         str
         """
-        error = self._error
+        error = 'Not available. Will be for Monte Carlo Analysis in future' + \
+                'versions of HEC-RAS.'
         raise NotImplementedError(error)
 
     def Plan_SetParameterUncertaintyXML(self, xmlText):
@@ -154,7 +159,8 @@ class ControllerAdded(object):
         -------
         str
         """
-        error = self._error
+        error = 'Not available. Will be for Monte Carlo Analysis in future' + \
+                'versions of HEC-RAS.'
         raise NotImplementedError(error)
 
     # %%
@@ -215,19 +221,16 @@ class ControllerAdded(object):
         raise NotImplementedError
 
 
-class Controller(ras41.ControllerBase, ras41.ControllerAdded,
-                 ControllerAdded, ControllerDeprecated):
+class ControllerBase(ras41.ControllerBase, ras41.ControllerAdded):
+    pass
+
+
+class Controller(ControllerBase, ControllerAdded, ControllerDeprecated):
     """HECRAS Controller version RAS500."""
+
     def __init__(self):
         super(Controller, self).__init__()
 
 
-class RASEvents(object):
-    """Not working"""
-    def HECRASController_ComputeProgressBar(self, Progress):
-        """ """
-        print(Progress)
-
-    def ComputeProgressMessage(self, msg):
-        """ """
-        print(msg)
+class RASEvents(ras41.RASEvents):
+    pass

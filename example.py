@@ -14,10 +14,6 @@ from pyras.controllers.hecras import ras_constants as RC
 #project = r'D:\Users\penac1\Dropbox (Personal)\it\repos\git\pyras\temp\Unsteady Examples\BEAV_STO_PROBLEM.prj'
 project = r'D:\Users\penac1\Dropbox (Personal)\it\repos\git\pyras\temp_examples\Unsteady Examples\BaldLatWeir.prj'
 
-rc = RAS500()
-rc.ShowRas()
-
-
 #with RAS500(project) as rc:
 #    res = rc.Project_Current()
 #    print(rc.version())
@@ -28,6 +24,8 @@ rc.ShowRas()
 #        print(m)
 #    rc.pause(10)
 
+rc = RAS500()
+rc.ShowRas()
 
 # %% Project
 rc.Project_Open(project)
@@ -303,10 +301,10 @@ rc.Project_Open(project)
 #print('')
 
 # %% Output 
-river = 1
-reach = 1
-n = 1
-station = '135068.7'
+#river = 1
+#reach = 1
+#n = 1
+#station = '135068.7'
 
 #res = rc.Output_ComputationLevel_Export('export_test2.txt')
 #print('Output_ComputationLevel_Export', res)
@@ -361,10 +359,49 @@ station = '135068.7'
 #print('Output_Variables', res)
 #print('')
 
-#refdate = dt.datetime(1999, 02, 18, 0, 0, 0)
-#res = rc.OutputDSS_GetStageFlowSA('Lower SA', refdate)
+#riv = 1
+#rch = 1
+#n = 1
+#updn = 1
+#prof = 1
+#res = rc.Output_VelDist(riv, rch, n, updn, prof)
+#print('Output_Output_VelDist', res)
+#print('')
+
+#riv = 'Bald Eagle'
+#rch = 'Loc Hav'
+#rs = '138154.4'
+#res = rc.OutputDSS_GetStageFlow(riv, rch, rs)
+#print('OutputDSS_GetStageFlow', res)
+#print('')
+
+#res = rc.OutputDSS_GetStageFlowSA('Lower SA')
 #print('OutputDSS_GetStageFlowSA', res)
-#print(res)
+#print('')
+
+# %% Plan
+#plan = 'Unsteady with Bridges, Dam, later weirs/'
+#res = rc.Plan_GetFilename(plan)
+#print('Plan_GetFilename', res)
+#print('')
+
+#res = rc.Plan_Names(False)
+#print('Plan_Names', res)
+#print('')
+
+#res = rc.Plan_Reports()
+#print('Plan_Reports', res)
+#print('')
+
+#plan = 'Unsteady with Bridges, Dam, later weirs/'
+#res = rc.Plan_SetCurrent(plan)
+#print('Plan_SetCurrent', res)
+#print('')
+
+#plan = 'Unsteady with Bridges, Dam, later weirs/'
+#show_message = False
+#res = rc.PlanOutput_IsCurrent(plan, show_message)
+#print('PlanOutput_IsCurrent', res)
 #print('')
 
 

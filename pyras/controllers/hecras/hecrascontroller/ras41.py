@@ -5,23 +5,26 @@ import os
 import os.path as osp
 
 
+def _fix_dates(dates):
+    """Helper function to convert dates to datetime objects."""
+
+    # Fix dates with epoch
+    init = dt.datetime(1900, 1, 1) - dt.timedelta(2)  # Needed to adjust
+    new_dates = [dt.timedelta(d) + init for d in dates[1:]]
+
+    return new_dates
+
+
 class ControllerDeprecated(object):
     """Methods present in RAS410 but not in RAS500."""
 
     def Compute_Cancel(self):
-        """
-        """
+        """Cancel running computation."""
         rc = self._rc
         rc.Compute_Cancel()
 
     def Compute_IsStillComputing(self):
-        """
-        Returns True if a computation is still in execution.
-
-        Returns
-        -------
-        bool
-        """
+        """Returns True if a computation is still in execution."""
         rc = self._rc
         res = rc.Compute_IsStillComputing()
         return res
@@ -127,6 +130,7 @@ class ControllerDeprecated(object):
     def SetDataLocations(self, PlanTitle, count, LocationDesciptions, DSSFiles,
                          DSSPathnames):
         """
+        
         PlanTitle : str
 
         count : int
@@ -147,7 +151,7 @@ class ControllerDeprecated(object):
 
 class ControllerAdded(object):
     """Methods present in RAS410 but not in RAS400"""
-    
+
     def Geometry_GetGML(self, geomfilename):
         """Returns the GML file txt for the current geometry file.
 
@@ -161,18 +165,15 @@ class ControllerAdded(object):
         res = rc.Geometry_GetGML(geomfilename)
         return res
 
-    def OutputDSS_GetStageFlowSA(self, StorageArea, InitialDate):
+    def OutputDSS_GetStageFlowSA(self, StorageArea):
         """
-        Returns stage and flow for every hydrograph output interval for a 
+        Returns stage and flow for every hydrograph output interval for a
         given storage area.
-        
+
         Parameters
         ----------
-        InitialDate : Datetime
-            The initial datetime to get the correct values. Needed due to a bug
-            in HECRAS.
         StorageArea : string
-            The storage area name. 
+            The storage area name.
 
         Returns
         -------
@@ -185,7 +186,7 @@ class ControllerAdded(object):
         Flow: list of floats
             The array of flow values.
         errmsg: str
-            An error message returned if something goes wrong with getting 
+            An error message returned if something goes wrong with getting
             output.
 
         Notes
@@ -200,19 +201,12 @@ class ControllerAdded(object):
         Stage = None
         Flow = None
         errmsg = None
-        
-        # First 2 results are not documented.  
-        # True/False and Name of Storage Areas
+
         res = rc.OutputDSS_GetStageFlowSA(StorageArea, nvalue, ValueDateTime,
                                           Stage, Flow, errmsg)
         success, StorageArea, nvalue, ValueDateTime, Stage, Flow, errmsg = res
 
-        # Fix dates due to some bug in hecras code.
-        base = ValueDateTime[0]
-        init = InitialDate
-        relative_dates = [d - base for d in ValueDateTime[:-1]]
-        new_dates = [dt.timedelta(d) + init for d in relative_dates]
-    
+        new_dates = _fix_dates(ValueDateTime)
         return nvalue, new_dates, Stage, Flow, errmsg
 
     def Output_ComputationLevel_Export(self, filename, WriteFlow=False,
@@ -307,8 +301,8 @@ class ControllerBase(object):
 
         Notes
         -----
-        This should be called before Compute_CurrentPlan. Because by default the
-        RAS Controller shows the Computation Window, this is not necessary
+        This should be called before Compute_CurrentPlan. Because by default
+        the RAS Controller shows the Computation Window, this is not necessary
         unless the Computation Window was already hidden in a previous line of
         code.
         """
@@ -1169,7 +1163,6 @@ class ControllerBase(object):
 
     def Output_GetNodes(self, riv, reach):
         """Gets a tuple of nodes and node types for a given river and reach.
-        
 
         Parameters
         ----------
@@ -1245,7 +1238,7 @@ class ControllerBase(object):
         Notes
         -----
         This function reads from the output file, so a *.O## file is required
-        (i.e. run computations first).        
+        (i.e. run computations first).
         """
         rc = self._rc
         res = rc.Output_GetReach(riv, reach)
@@ -1270,7 +1263,7 @@ class ControllerBase(object):
         Notes
         -----
         This function reads from the output file, so a *.O## file is required
-        (i.e. run computations first).        
+        (i.e. run computations first).
         """
         rc = self._rc
         nReach = None
@@ -1295,7 +1288,7 @@ class ControllerBase(object):
         Notes
         -----
         This function reads from the output file, so a *.O## file is required
-        (i.e. run computations first).        
+        (i.e. run computations first).
         """
         rc = self._rc
         res = rc.Output_GetRiver(river)
@@ -1316,7 +1309,7 @@ class ControllerBase(object):
         -----
         Works like Geometry_GetReaches subroutine, only this function reads
         reads from the output file, so a *.O## file is required (i.e. run
-        computations first).        
+        computations first).
         """
         rc = self._rc
         nRiver = None
@@ -1328,7 +1321,7 @@ class ControllerBase(object):
     def Output_NodeOutput(self, riv, rch, n, updn, prof, nVar):
         """
         Returns an output value for a given node and profile.
-        
+
         Parameters
         ----------
         riv : int
@@ -1351,6 +1344,7 @@ class ControllerBase(object):
         rc = self._rc
         res = rc.Output_NodeOutput(riv, rch, n, updn, prof, nVar)
         output, riv, rch, n, updn, prof, nVar = res
+
         return output
 
     def Output_ReachOutput(self, riv, rch, prof, nVar):
@@ -1378,7 +1372,7 @@ class ControllerBase(object):
             The list of channel distances.
         value : list of floats
             The list of values for the given variable ID.
-        
+
         Notes
         -----
         The output values that are returned are for the HEC-RAS variable ID
@@ -1389,7 +1383,7 @@ class ControllerBase(object):
         argument is based on a count of all river stations (Inlcuding BR, IS,
         LS, etc.), so 'Output_ReachOutput and ' Output_NodeOutput' are not
         compatible with each other.
-        
+
         Another caution: Output_ReachOutput returns a list of cross sections
         that are in reverse order of the typical convention of listing the
         most upstream cross section first. Output_ReachOutput assigns the
@@ -1403,11 +1397,26 @@ class ControllerBase(object):
         res = rc.Output_ReachOutput(riv, rch, prof, nVar, nRS, rs, ChannelDist,
                                     value)
         riv, rch, prof, nVar, nRS, rs, ChannelDist, value = res
-        
+
         return nRS, rs, ChannelDist, value
 
     def Output_Variables(self):
-        """
+        """Get a list of HEC-RAS output variable names  and descriptions.
+
+        Returns
+        -------
+        nVar : int
+            The number of HEC-RAS variables (**not** the variable ID!)
+        VarName : list of str
+            The list of variable names
+        VarDesc : list of str
+            The list of variable descriptions.
+
+        Notes
+        -----
+        The variable ID numbers are what are used for 'nVar' in
+        Output_NodeOutput and Output_ReachOutput methods. Variables id can be
+        accessed by calling the constants defined in the ras_constants module.
         """
         rc = self._rc
         nVar = None
@@ -1415,22 +1424,125 @@ class ControllerBase(object):
         VarDesc = None
         res = rc.Output_Variables(nVar, VarName, VarDesc)
         nVar, VarName, VarDesc = res
+        ids = list(range(1, len(VarName)+1, 1))
+
         return nVar, VarName, VarDesc
 
-    def Output_VelDist(self):
-        """
-        """
-        raise NotImplementedError
+    def Output_VelDist(self, riv, rch, n, updn, prof):
+        """Gets information about velocity distribution.
 
-    def OutputDSS_GetStageFlow(self):
+        Parameters
+        ----------
+        riv : int
+            The river ID number.
+        rch : int
+            The reach ID number.
+        n : int
+            The node ID number.
+        updn : int
+            0 for upstream section, 1 for BR UP, 2 for BR DOWN. All other
+            integers return output for BR UP. Only applies to nodes that have
+            an upstream and downstream section, like bridges, culverts and
+            multiple openings. For all other nodes, user can use any long
+            integer number, makes no difference.
+        prof : int
+            The profile ID number.
+
+        Returns
+        -------
+        nv : int
+            The number of vertical slices.
+        LeftSta : list of floats
+            The list of left station values for each slice
+        RightSta : list of floats
+            The list of tight station values for each slice.
+        ConvPerc : list of floats
+            The list of percent of total conveyance for each slice.
+        Area : list of floats
+            The list of flow area values for each slice.
+        WP : list of floats
+            The list of wetted perimeter values for each slice.
+        Flow : list of floats
+            The list of flow values for each slice.
+        HydrDepth : list of floats
+            The list of hydraulic depth values for each slice.
+        Velocity : list of floats
+            The list of velocity values for each slice.
+
+        Notes
+        -----
+        Flow distribution muts be set as an option in the HEC-RAS model for any
+        cross sections that will be called by this subroutine. If 'Plot
+        Velocity Distribution' is turned on then this method will return data
+        for all slices defined in the Flow Distribution Locations Editos. If
+        'Plot Velocity Distribution'is turned off, this method will return data
+        for the left overbank, main channedl and right overbank.
         """
+        rc = self._rc
+        nv = None
+        LeftSta = None
+        RightSta = None
+        ConvPerc = None
+        Area = None
+        WP = None
+        Flow = None
+        HydrDepth = None
+        Velocity = None
+        res = rc.Output_VelDist(riv, rch, n, updn, prof, nv, LeftSta, RightSta,
+                                ConvPerc, Area, WP, Flow, HydrDepth, Velocity)
+        (riv, rch, n, updn, prof, nv, LeftSta, RightSta, ConvPerc, Area, WP,
+         Flow, HydrDepth, Velocity) = res
+
+        return (nv, LeftSta, RightSta, ConvPerc, Area, WP, Flow, HydrDepth,
+                Velocity)
+
+    def OutputDSS_GetStageFlow(self, riv, rch, rs):
+        """Return stage and flow for every hydrograph output interval.
+
+        Parameters
+        ----------
+        riv : str
+            The river name.
+        rch : str
+            The reach name.
+        rs : str
+            The river station.
+
+        Returns
+        -------
+        nvalue : int
+            The number of hydrograph outputs.
+        ValueDateTime : list of datetime
+            The list of datetime objects.
+        Stage : list of floats
+            The list of stage values.
+        Flow : list of floats
+            The list of flow values.
+        errmsg : str
+            Error message in case ssomething goes wrong with getting output.
+
+        Notes
+        -----
+        An output file is not needed, since this function reads the DSS file.
+        Therefore, postprocessing is not required, which could save a lot of
+        time, if run efficiency is required.
         """
-        raise NotImplementedError
+        rc = self._rc
+        nvalue = None
+        ValueDateTime = None
+        Stage = None
+        Flow = None
+        errmsg = None
+        res = rc.OutputDSS_GetStageFlow(riv, rch, rs, nvalue, ValueDateTime,
+                                        Stage, Flow, errmsg)
+        success, riv, rch, rs, nvalue, ValueDateTime, Stage, Flow, errmsg = res
+        new_dates = _fix_dates(ValueDateTime)
+
+        return nvalue, new_dates, Stage, Flow, errmsg
 
     # %% Plan
     def Plan_GetFilename(self, planName):
-        """
-        Given a plan name, returns the plan file, including path.
+        """Given a plan name, returns the plan file, including path.
 
         Parameters
         ----------
@@ -1442,15 +1554,13 @@ class ControllerBase(object):
         str
             Plan file and path
         """
-        raise NotImplementedError
         rc = self._rc
         res = rc.Plan_GetFilename(planName)
-        return res
+        path, planName = res
+        return path
 
-    def Plan_Names(self, PlanCount, PlanNames,
-                   IncludeOnlyPlansInBaseDirectory):
-        """
-        Gets a list of all the Plan Names in the active HEC-RAS project.
+    def Plan_Names(self, IncludeOnlyPlansInBaseDirectory):
+        """Gets a list of all the Plan Names in the active HEC-RAS project.
 
         Parameters
         ----------
@@ -1463,11 +1573,14 @@ class ControllerBase(object):
         PlanNames : list of str
             The list of plan names.
         """
-        raise NotImplementedError
         rc = self._rc
-        res = rc.Plan_GetFilename(PlanCount, PlanNames,
-                                  IncludeOnlyPlansInBaseDirectory)
-        return res
+        PlanCount = None
+        PlanNames = None
+        res = rc.Plan_Names(PlanCount, PlanNames,
+                            IncludeOnlyPlansInBaseDirectory)
+        PlanCount, PlanNames, IncludeOnlyPlansInBaseDirectory = res
+
+        return PlanCount, PlanNames
 
     def Plan_Reports(self):
         """
@@ -1479,12 +1592,20 @@ class ControllerBase(object):
             The number of plan reports.
         ReportNames : list of str
             The list of plan reports.
+
+        Notes
+        -----
+        Plan Reports are the 'Cross Section Plot', 'Profile Plot, 'XYZ Plot',
+        'Cross Section Table', and 'Profile Table'. Does not print out the
+        reports, only list the names of the available projects.
         """
-        raise NotImplementedError
         rc = self._rc
-        ReportCount, ReportNames = [], []
-        res = rc.Plan_GetFilename(ReportCount, ReportNames)
-        return res
+        ReportCount = None
+        ReportNames = None
+        res = rc.Plan_Reports(ReportCount, ReportNames)
+        ReportCount, ReportNames = res
+
+        return ReportCount, ReportNames
 
     def Plan_SetCurrent(self, PlanTitleToSet):
         """
@@ -1500,11 +1621,10 @@ class ControllerBase(object):
         ------
         bool
         """
-        raise NotImplementedError
         rc = self._rc
-        res = rc.Plan_SetCurrent(PlanTitleToSet)
+        success, PlanTitleToSet = rc.Plan_SetCurrent(PlanTitleToSet)
 
-        return res
+        return success
 
     def PlanOutput_IsCurrent(self, PlanTitleToCheck, ShowMessageList):
         """
@@ -1533,12 +1653,13 @@ class ControllerBase(object):
         continue with run-time. Otherwise the RAS "Current Plan"window opens
         and closes quickly.
         """
-        raise NotImplementedError
         rc = self._rc
-        errmsg = ''
-        res = rc.Plan_SetCurrent(PlanTitleToCheck, ShowMessageList, errmsg)
+        errmsg = None
+        res = rc.PlanOutput_IsCurrent(PlanTitleToCheck, ShowMessageList,
+                                      errmsg)
+        success, PlanTitleToCheck, ShowMessageList, errmsg = res
 
-        return res
+        return errmsg
 
     def PlanOutput_SetCurrent(self, PlanTitleToSet):
         """
@@ -2129,11 +2250,10 @@ class ControllerBase(object):
 
 
 class Controller(ControllerBase, ControllerAdded, ControllerDeprecated):
-    """HECRAS Controller version 410."""
+    pass
 
 
 class RASEvents:
-    """Not working"""
     def HECRASController_ComputeProgressBar(self, Progress):
         """
         Repeatedly returns a single value between 0 and 1, indicating the
@@ -2152,9 +2272,8 @@ class RASEvents:
         called repeatedly once Compute_CurrentPlan is called and thorugh the
         duration of the HEC-RAS Computations.
 
-        Python: this event do not work with win32com
+        Python: this event does not work with win32com
         """
-        print(Progress)
         return Progress
 
     def ComputeProgressMessage(self, msg):
@@ -2174,7 +2293,6 @@ class RASEvents:
         is called repeatedly once Compute_CurrentPlan is called and thorugh the
         duration of the HEC-RAS Computations.
 
-        Python: this event do not work with win32com
+        Python: this event does not work with win32com
         """
-        print(msg)
         return msg

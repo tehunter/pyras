@@ -16,15 +16,14 @@ class RASController(object):
         try:
             self._rc = win32com.client.DispatchEx(
                 "{0}.HECRASController".format(self._ras_version))
-#                self._rc = win32com.client.DispatchWithEvents(
-#                    "{0}.HECRASController".format(ras_version), ras.RASEvents)
+                #self._rc = win32com.client.DispatchWithEvents(
+                #    "{0}.HECRASController".format(ras_version), ras.RASEvents)
             self._events = win32com.client.WithEvents(self._rc,
                                                       self._ras.RASEvents)
         except Exception:
             msg = "{0}.HECRASController not found.".format(self._ras_version)
             raise ImportError(msg)
 
-        
         self._error = 'Not available in version "{0}" of controller'.format(
             self._ras_version)
         self._filename = filename
@@ -60,7 +59,13 @@ class RASController(object):
 
 
 class RAS41(RASController, ras41.Controller):
-    """ """
+    """HEC-RAS Controller version RAS41.
+
+    Parameters
+    ----------
+    filename : str
+        path to a HEC-RAS project file to open (*.prj).
+    """
     def __init__(self, filename=None):
         self._ras_version = 'RAS41'
         self._ras = ras41
@@ -69,7 +74,13 @@ class RAS41(RASController, ras41.Controller):
 
 
 class RAS500(RASController, ras500.Controller):
-    """ """
+    """HEC-RAS Controller version RAS500.
+
+    Parameters
+    ----------
+    filename : str
+        path to a HEC-RAS project file to open (*.prj).
+    """
     def __init__(self, filename=None):
         self._ras_version = 'RAS500'
         self._ras = ras500
