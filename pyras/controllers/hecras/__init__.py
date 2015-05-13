@@ -9,14 +9,8 @@ import win32api
 import win32con
 
 
-def get_supported_versions():
-    """ """
-    return ['RAS500', 'RAS41']  # Order gives the priority
-
-
 def kill_ras():
     """ """
-    import os
     import subprocess
 
     ras_process_string = 'ras.exe'
@@ -33,6 +27,7 @@ def kill_ras():
 
     for pid in pids:
         try:
+            # FIXME:
             os.system('TASKKILL /PID {0} /F >nul'.format(pid))
         except Exception, e:
             print(e)
@@ -183,30 +178,16 @@ class HECRASImportError(Exception):
 
 
 # %%
-kill_ras()
+#kill_ras()
 __available_versions__ = get_available_versions()
 
+from .hecrascontroller import RAS500
+from .hecrascontroller import RAS41
 
-env_ras_version = os.environ.get('RAS_CONTROLLER_VERSION', None)
-
-if len(__available_versions__) > 0:
-    if env_ras_version is None:
-        for ras_version in get_supported_versions():
-            if ras_version in __available_versions__:
-                os.environ['RAS_CONTROLLER_VERSION'] = ras_version
-                break
-    else:
-        if env_ras_version not in get_supported_versions():
-            raise HECRASImportErrorException()
-
-    from .hecrascontroller import HECRASController
-
-    # Cleaning the namespace
-    globals().pop('hecrascontroller')
-    globals().pop('hecrasgeometry')
-    globals().pop('win32api')
-    globals().pop('win32con')
-    globals().pop('runtime')
-    globals().pop('os')
-else:
-    raise HECRASImportErrorException()
+# Cleaning the namespace
+globals().pop('hecrascontroller')
+globals().pop('hecrasgeometry')
+globals().pop('win32api')
+globals().pop('win32con')
+globals().pop('runtime')
+globals().pop('os')

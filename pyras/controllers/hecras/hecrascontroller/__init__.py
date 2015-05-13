@@ -1,37 +1,33 @@
-import os
-
+"""
+"""
 import win32com.client
 
+import ras41
+import ras500
 from .. import hecrasgeometry
 from ..runtime import Runtime
 
 
-ras_version = os.environ['RAS_CONTROLLER_VERSION']
-ras = __import__(ras_version.lower(), globals(), locals(), [], -1)
-
-
-class HECRASController(ras.Controller, ras.ControllerDeprecated):
-    """HEC-RAS Controller.
-
-    project_file : str
-        TODO:
-    
-    """
+class RASController(object):
+    """ """
 
     def __init__(self, filename=None):
-        super(HECRASController, self).__init__()
-        self._rc = win32com.client.DispatchEx(
-            "{0}.HECRASController".format(ras_version))
-#            self._rc = win32com.client.DispatchWithEvents(
-#                "{0}.HECRASController".format(ras_version), ras.RASEvents)
-        self._events = win32com.client.WithEvents(self._rc, ras.RASEvents)
-        self._ras_version = ras_version
-        self._error = 'Not available in version "{}" of controller'.format(
+        super(RASController, self).__init__()
+        try:
+            self._rc = win32com.client.DispatchEx(
+                "{0}.HECRASController".format(self._ras_version))
+#                self._rc = win32com.client.DispatchWithEvents(
+#                    "{0}.HECRASController".format(ras_version), ras.RASEvents)
+            self._events = win32com.client.WithEvents(self._rc,
+                                                      self._ras.RASEvents)
+        except Exception:
+            msg = "{0}.HECRASController not found.".format(self._ras_version)
+            raise ImportError(msg)
+
+        
+        self._error = 'Not available in version "{0}" of controller'.format(
             self._ras_version)
-
         self._filename = filename
-
-        self._geometry = hecrasgeometry.HECRASGeometry(ras_version)
         self._runtime = Runtime(self)
 
         if filename:
@@ -54,5 +50,28 @@ class HECRASController(ras.Controller, ras.ControllerDeprecated):
         """ """
         return self._runtime
 
+    def version(self):
+        """ """
+        return self._ras_version
+
     def close(self):
+        """ """
         self._runtime.close()
+
+
+class RAS41(RASController, ras41.Controller):
+    """ """
+    def __init__(self, filename=None):
+        self._ras_version = 'RAS41'
+        self._ras = ras41
+        self._geometry = hecrasgeometry.RAS41()
+        super(RAS41, self).__init__(filename)
+
+
+class RAS500(RASController, ras500.Controller):
+    """ """
+    def __init__(self, filename=None):
+        self._ras_version = 'RAS500'
+        self._ras = ras500
+        self._geometry = hecrasgeometry.RAS500()
+        super(RAS500, self).__init__(filename)

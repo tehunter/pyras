@@ -2,32 +2,35 @@
 """
 
 """
-import os 
+import datetime as dt 
 
-#os.environ['RAS_CONTROLLER_VERSION'] = 'RAS41'
-os.environ['RAS_CONTROLLER_VERSION'] = 'RAS500'
+from pyras.controllers import RAS500, RAS41, kill_ras
+from pyras.controllers.hecras import ras_constants as RC
 
-from pyras.controllers import HECRASController, kill_ras
-
-project = r'temp_examples\Steady Examples\BEAVCREK.prj'
-project = r'D:\Users\penac1\Dropbox (Personal)\it\repos\git\pyras\temp_examples\Steady Examples\BEAVCREK.prj'
+#project = r'temp_examples\Steady Examples\BEAVCREK.prj'
+#project = r'D:\Users\penac1\Dropbox (Personal)\it\repos\git\pyras\temp_examples\Steady Examples\BEAVCREK.prj'
 #project = r'temp_examples\Unsteady Examples\NavigationDam\ROCK_TEST.prj'
 
-#rc = HECRASController()
+#project = r'D:\Users\penac1\Dropbox (Personal)\it\repos\git\pyras\temp\Unsteady Examples\BEAV_STO_PROBLEM.prj'
+project = r'D:\Users\penac1\Dropbox (Personal)\it\repos\git\pyras\temp_examples\Unsteady Examples\BaldLatWeir.prj'
 
-#rc.ShowRas()
+rc = RAS500()
+rc.ShowRas()
 
 
-with HECRASController(project) as rc:
-    res = rc.Project_Current()
-    print('Project_Current:')
-    print(res)
-    print('')
-    rc.pause(10)
+#with RAS500(project) as rc:
+#    res = rc.Project_Current()
+#    print(rc.version())
+#    print('Project_Current:')
+#    print(res)
+#    print('')
+#    for m in sorted(dir(rc)):
+#        print(m)
+#    rc.pause(10)
 
 
 # %% Project
-#rc.Project_Open(project)
+rc.Project_Open(project)
 
 #res = rc.Project_Current()
 #print('Project_Current:')
@@ -299,6 +302,73 @@ with HECRASController(project) as rc:
 #print(res)
 #print('')
 
+# %% Output 
+river = 1
+reach = 1
+n = 1
+station = '135068.7'
+
+#res = rc.Output_ComputationLevel_Export('export_test2.txt')
+#print('Output_ComputationLevel_Export', res)
+#print('')
+#
+#res = rc.Output_GetNode(river, reach, station)
+#print('Output_GetNode', res)
+#print('')
+#
+#res = rc.Output_GetNodes(river, reach)
+#print('Output_GetNodes', res)
+#print('')
+
+#res = rc.Output_GetProfiles()
+#print('Output_GetProfiles', res)
+#print('')
+
+#reach = 'Loc Hav'
+#res = rc.Output_GetReach(river, reach)
+#print('Output_GetReach', res)
+#print('')
+
+#res = rc.Output_GetReaches(river)
+#print('Output_GetReaches', res)
+#print('')
+
+#river_name = 'Bald Eagle'
+#res = rc.Output_GetRiver(river_name)
+#print('Output_GetRiver', res)
+#print('')
+
+#res = rc.Output_GetRivers()
+#print('Output_GetRivers', res)
+#print('')
+
+#updn = 0
+#prof = 1
+#nVar = RC.WS_ELEVATION
+#res = rc.Output_NodeOutput(river, reach, n, updn, prof, nVar)
+#print('Output_NodeOutput', res)
+#print('')
+
+#riv_id = 1
+#rch = 1
+#prof = 1
+#nVar = RC.PROFILE
+#res = rc.Output_ReachOutput(riv_id, rch, prof, nVar)
+#print('Output_ReachOutput', res)
+#print('')
+
+#res = rc.Output_Variables()
+#print('Output_Variables', res)
+#print('')
+
+#refdate = dt.datetime(1999, 02, 18, 0, 0, 0)
+#res = rc.OutputDSS_GetStageFlowSA('Lower SA', refdate)
+#print('OutputDSS_GetStageFlowSA', res)
+#print(res)
+#print('')
+
+
+
 # %% Plot
 
 #rc.PlotHydraulicTables('Beaver Creek', 'Kentwood', '5.99')
@@ -336,5 +406,5 @@ with HECRASController(project) as rc:
 #print(res)
 #print('')
 
-#rc.close()
-#kill_all()
+rc.close()
+kill_ras()

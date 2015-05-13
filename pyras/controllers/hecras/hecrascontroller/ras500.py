@@ -2,16 +2,13 @@
 from . import ras41
 
 
-class Controller(ras41.Controller):
-    """HECRAS Controller version RAS500"""
+class ControllerDeprecated(object):
+    """Methods present in RAS500 but not in next version."""
+    pass
 
-    def __init__(self):
-        super(Controller, self).__init__()
 
-    def Compute_Cancel(self):
-        """ """
-        error = self._error
-        raise NotImplementedError(error)
+class ControllerAdded(object):
+    """Methods present in RAS500 but not in RAS410."""
 
     def Compute_Complete(self):
         """
@@ -25,7 +22,7 @@ class Controller(ras41.Controller):
         rc = self._rc
         return rc.Compute_Complete()
 
-    def Compute_CurrentPlan(self, BlockingModel=True):
+    def Compute_CurrentPlan(self, BlockingMode=True):
         """
         Computes the current plan.
 
@@ -43,14 +40,9 @@ class Controller(ras41.Controller):
         rc = self._rc
         nmsg = None
         Msg = None
-        res = rc.Compute_CurrentPlan(nmsg, Msg, BlockingModel)
+        res = rc.Compute_CurrentPlan(nmsg, Msg, BlockingMode)
         success, nmsg, Msg, other = res
         return success
-
-    def Compute_IsStillComputing(self):
-        """ """
-        error = self._error
-        raise NotImplementedError(error)
 
     def Compute_StartedFromController(self):
         """
@@ -124,22 +116,6 @@ class Controller(ras41.Controller):
 
         return errmsg
 
-    # %% Get
-    def GetDataLocations_Input(self):
-        """ """
-        error = self._error
-        raise NotImplementedError(error)
-
-    def GetDataLocations_Input_count(self):
-        """ """
-        error = self._error
-        raise NotImplementedError(error)
-
-    def GetDataLocations_Output_count(self):
-        """ """
-        error = self._error
-        raise NotImplementedError(error)
-
     # %% Plans
     def Plan_GetParameterUncertaintyXML(self):
         """
@@ -195,11 +171,6 @@ class Controller(ras41.Controller):
         rc = self._rc
         rc.QuitRas()
 
-    def SetDataLocations(self):
-        """ """
-        error = self._error
-        raise NotImplementedError(error)
-
     # %% WAT, CAVI, FRA
     def wcf_ComputePlan(self):
         """
@@ -244,12 +215,14 @@ class Controller(ras41.Controller):
         raise NotImplementedError
 
 
-class ControllerDeprecated(object):
-    """ """
-    pass
+class Controller(ras41.ControllerBase, ras41.ControllerAdded,
+                 ControllerAdded, ControllerDeprecated):
+    """HECRAS Controller version RAS500."""
+    def __init__(self):
+        super(Controller, self).__init__()
 
 
-class RASEvents:
+class RASEvents(object):
     """Not working"""
     def HECRASController_ComputeProgressBar(self, Progress):
         """ """

@@ -1,22 +1,34 @@
 
-import os
-
 import win32com.client
 
+import ras41
+import ras500
 
-def HECRASGeometry(ras_version=None):
-    """ """
-    if ras_version is None:
-        ras_version = os.environ['RAS_CONTROLLER_VERSION']
 
-    ras = __import__(ras_version.lower(), globals(), locals(), [], -1)
-
-    class RASGeometry(ras.Geometry):
-        """
-        """
-        def __init__(self, ras_version):
-            super(RASGeometry, self).__init__()
+class RASGeometry(object):
+    """
+    """
+    def __init__(self):
+        super(RASGeometry, self).__init__()
+        try:
             self._geometry = win32com.client.DispatchEx(
-                "{0}.HECRASGeometry".format(ras_version))
+                "{0}.HECRASGeometry".format(self._ras_version))
+        except Exception:
+            msg = "{0}.HECRASGeometry not found.".format(self._ras_version)
+            raise ImportError(msg)
 
-    return RASGeometry(ras_version)
+
+class RAS41(RASGeometry, ras41.Geometry):
+    """ """
+    def __init__(self):
+        self._ras_version = 'RAS41'
+        self._ras = ras41
+        super(RAS41, self).__init__()
+
+
+class RAS500(RASGeometry, ras500.Geometry):
+    """ """
+    def __init__(self):
+        self._ras_version = 'RAS500'
+        self._ras = ras500
+        super(RAS500, self).__init__()
