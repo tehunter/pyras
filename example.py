@@ -3,53 +3,32 @@
 
 """
 import datetime as dt 
+import time
 
 from pyras.controllers import RAS500, RAS41, kill_ras
 from pyras.controllers.hecras import ras_constants as RC
 
 #project = r'temp_examples\Steady Examples\BEAVCREK.prj'
-#project = r'D:\Users\penac1\Dropbox (Personal)\it\repos\git\pyras\temp_examples\Steady Examples\BEAVCREK.prj'
 #project = r'temp_examples\Unsteady Examples\NavigationDam\ROCK_TEST.prj'
 
 #project = r'D:\Users\penac1\Dropbox (Personal)\it\repos\git\pyras\temp\Unsteady Examples\BEAV_STO_PROBLEM.prj'
-project = r'D:\Users\penac1\Dropbox (Personal)\it\repos\git\pyras\temp_examples\Unsteady Examples\BaldLatWeir.prj'
-
-#with RAS500(project) as rc:
-#    res = rc.Project_Current()
-#    print(rc.version())
-#    print('Project_Current:')
-#    print(res)
-#    print('')
-#    for m in sorted(dir(rc)):
-#        print(m)
-#    rc.pause(10)
-
-rc = RAS500()
-rc.ShowRas()
-
-# %% Project
-rc.Project_Open(project)
-
-#res = rc.Project_Current()
-#print('Project_Current:')
-#print(res)
-#print('')
-
-#rc.Compute_HideComputationWindow()
-#rc.Compute_ShowComputationWindow()
-#res = rc.Compute_CurrentPlan()
-#print('Compute_CurrentPlan:')
-#print(res)
-#print('')
-
-#res = rc.Compute_Cancel()
-#print('\nCompute_Cancel', res)
-
-#res = rc.Compute_Complete()
-#print('Compute_Complete')
-#print(res)
-#print('')
-
+#project = r'D:\Users\penac1\Dropbox (Personal)\it\repos\git\pyras\temp_examples\Unsteady Examples\BaldLatWeir.prj'
+#project = r'D:\Users\penac1\Dropbox (Personal)\it\repos\git\pyras\temp_examples\Steady Examples\BEAVCREK.prj'
+#
+##with RAS500(project) as rc:
+##    res = rc.Project_Current()
+##    print(rc.version())
+##    print('Project_Current:')
+##    print(res)
+##    print('')
+##    for m in sorted(dir(rc)):
+##        print(m)
+##    rc.pause(10)
+#
+#rc = RAS41()
+#rc.ShowRas()
+#rc.Project_Open(project)
+#
 # %% Curent (Controller Class)
 #res = rc.CurrentGeomFile()
 #print('CurrentGeomFile')
@@ -232,8 +211,6 @@ rc.Project_Open(project)
 #print(res)
 #print('')
 
-# %% Geometry (Controller Class)
-
 # Not tested
 #res = rc.Geometery_GISImport(self, title, Filename)
 #print('Geometery_GISImport')
@@ -404,13 +381,89 @@ rc.Project_Open(project)
 #print('PlanOutput_IsCurrent', res)
 #print('')
 
+#plan = 'Unsteady with Bridges, Dam, later weirs/'
+#res = rc.PlanOutput_SetCurrent(plan)
+#print('PlanOutput_SetCurrent', res)
+#print('')
 
+#plan = 'Unsteady with Bridges, Dam, later weirs/'
+#res = rc.PlanOutput_SetMultiple(1, [plan], False)
+#print('PlanOutput_SetMultiple', res)
+#print('')
 
 # %% Plot
 
+riv = 'Bald Eagle'
+rch = 'Loc Hav'
+rs = '138154.4'
+sa = ' Upper SA'
 #rc.PlotHydraulicTables('Beaver Creek', 'Kentwood', '5.99')
-#print('PlotHydraulicTables', res)
+#print('PlotHydraulicTables')
 #print('')
+
+#rc.PlotPF('Bald Eagle', 'Loc Hav')
+#print('PlotPF')
+#print('')
+
+#rc.PlotPFGeneral('Bald Eagle', 'Loc Hav')
+#print('PlotPFGeneral')
+#print('')
+
+#rc.PlotRatingCurve(riv, rch, rs)
+#print('PlotRatingCurve')
+#print('')
+
+#rc.PlotStageFlow(riv, rch, rs)
+#print('PlotStageFlow')
+#print('')
+
+#rc.PlotStageFlow_SA(sa)
+#print('PlotStageFlow_SA')
+#print('')
+
+#rc.PlotXS(riv, rch, rs)
+#print('PlotXS')
+#print('')
+
+#rc.PlotXYZ(riv, rch)
+#print('PlotXYZ')
+#print('')
+
+# %% Project (Controller Class)
+
+#res = rc.Project_Current()
+#print('Project_Current:')
+#print(res)
+#print('')
+
+#title = 'Test' 
+#path = r'd:\test\file.prj' 
+#rc.Project_New(title, path)
+#print('Project_New:')
+#print('')
+
+#path = r'd:\test1\copy.prj'
+#rc.Project_SaveAs(path)
+#print('Project_SaveAs:')
+#print('')
+
+
+
+#rc.Compute_HideComputationWindow()
+#rc.Compute_ShowComputationWindow()
+#res = rc.Compute_CurrentPlan()
+#print('Compute_CurrentPlan:')
+#print(res)
+#print('')
+
+#res = rc.Compute_Cancel()
+#print('\nCompute_Cancel', res)
+
+#res = rc.Compute_Complete()
+#print('Compute_Complete')
+#print(res)
+#print('')
+
 
 # %% Schematic (Controller Class)
 #res = rc.Schematic_ReachCount()
@@ -443,5 +496,51 @@ rc.Project_Open(project)
 #print(res)
 #print('')
 
+# %% Steady
+#project = r'D:\Users\penac1\Dropbox (Personal)\it\repos\git\pyras\temp_examples\Steady Examples\BEAVCREK.prj'
+#rc = RAS500()
+#rc.ShowRas()
+#rc.Project_Open(project)
+
+#res = rc.SteadyFlow_ClearFlowData()
+#print('SteadyFlow_ClearFlowData')
+
+#river = 'Beaver Creek'
+#reach = 'Kentwood' 
+#downstream = True
+#ws = [210,211, 215]
+#res = rc.SteadyFlow_FixedWSBoundary(river, reach, downstream , ws)
+#print('SteadyFlow_FixedWSBoundary')
+
+#res = rc.SteadyFlow_nProfile()
+#print('SteadyFlow_nProfile', res)
+
+#river = 'Beaver Creek'
+#reach = 'Kentwood' 
+#rs = '5.99'
+#flow = [5001, 10001, 14001]
+#res = rc.SteadyFlow_SetFlow(river, reach, rs, flow)
+#print('SteadyFlow_SetFlow', res)
+
+# %% Table
+project = r'D:\Users\penac1\Dropbox (Personal)\it\repos\git\pyras\temp_examples\Steady Examples\BEAVCREK.prj'
+rc = RAS500()
+rc.ShowRas()
+rc.Project_Open(project)
+
+#river = 'Beaver Creek'
+#reach = 'Kentwood' 
+#rc.TablePF(river, reach)
+#print('TablePF')
+
+river = 'Beaver Creek'
+reach = 'Kentwood'
+rs = '5.99'
+rc.TableXS(river, reach, rs)
+print('TableXS')
+
+
+
+time.sleep(3)
 rc.close()
 kill_ras()

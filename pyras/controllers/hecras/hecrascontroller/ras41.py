@@ -15,6 +15,20 @@ def _fix_dates(dates):
     return new_dates
 
 
+def _create_dir(filepath):
+    """Checks if path is valid, and if dir does not exist it will create it
+    recursively.
+    """
+    # Check relative path to script
+    dirpath = osp.dirname(osp.abspath(filepath))
+    if not osp.isdir(dirpath):
+        # Create directory recursively
+        os.makedirs(dirpath)
+    fullpath = osp.abspath(filepath)
+
+    return fullpath
+
+
 class ControllerDeprecated(object):
     """Methods present in RAS410 but not in RAS500."""
 
@@ -1677,14 +1691,14 @@ class ControllerBase(object):
         Notes
         -----
         This only works if an output file exists for the selected plan. Does
-        not change the current plan, nly changes the output file that is
+        not change the current plan, only changes the output file that is
         displayed in the output tables and plots.
         """
-        raise NotImplementedError
         rc = self._rc
         res = rc.Plan_SetCurrent(PlanTitleToSet)
+        success, PlanTitleToSet = res
 
-        return res
+        return success
 
     def PlanOutput_SetMultiple(self, nPlanTitleToSet, PlanTitleToSet_0,
                                ShowMessageList):
@@ -1714,7 +1728,12 @@ class ControllerBase(object):
         The method plan_Naes returns a 1-based array so it must be converted to
         0-based, prior to calling PlanOutput_SetMultiple.
         """
-        raise NotImplementedError
+        rc = self._rc
+        res = rc.PlanOutput_SetMultiple(nPlanTitleToSet, PlanTitleToSet_0,
+                                        ShowMessageList)
+        nplans, nPlanTitleToSet, PlanTitleToSet_0, ShowMessageList = res
+
+        return nplans
 
     # %% Plot
     def PlotHydraulicTables(self, river, reach, rs):
@@ -1750,9 +1769,9 @@ class ControllerBase(object):
         -----
         Must have an output file for this to work.
         """
-        raise NotImplementedError
         rc = self._rc
         rc.PlotPF(river, reach)
+        self._runtime.pause_text('Profile Plot')
 
     def PlotPFGeneral(self, river, reach):
         """
@@ -1769,11 +1788,11 @@ class ControllerBase(object):
         -----
         Must have an output file for this to work.
         """
-        raise NotImplementedError
         rc = self._rc
         rc.PlotPFGeneral(river, reach)
+        self._runtime.pause_text('General Profile Plot')
 
-    def PlotRatingCurve(self, river, reach):
+    def PlotRatingCurve(self, river, reach, rs):
         """
         Displays the Rating Curve for a given River, Reach and River Station.
 
@@ -1790,9 +1809,9 @@ class ControllerBase(object):
         -----
         Must have an output file for this to work.
         """
-        raise NotImplementedError
         rc = self._rc
-        rc.PlotRatingCurve(river, reach)
+        rc.PlotRatingCurve(river, reach, rs)
+        self._runtime.pause_text('Rating Curve')
 
     def PlotStageFlow(self, river, reach, rs):
         """
@@ -1812,9 +1831,9 @@ class ControllerBase(object):
         -----
         For unsteady plans only. Must have an output file for this to work.
         """
-        raise NotImplementedError
         rc = self._rc
         rc.PlotStageFlow(river, reach, rs)
+        self._runtime.pause_text('Stage and Flow Hydrographs')
 
     def PlotStageFlow_SA(self, SAName):
         """
@@ -1827,9 +1846,9 @@ class ControllerBase(object):
         therefore the storage area name has to be hard coded, read from a file,
         or retrieved interactively during run-time.
         """
-        raise NotImplementedError
         rc = self._rc
         rc.PlotStageFlow_SA(SAName)
+        self._runtime.pause_text('Stage and Flow Hydrographs')
 
     def PlotXS(self, river, reach, rs):
         """
@@ -1845,9 +1864,9 @@ class ControllerBase(object):
         rs : str
             The river station.
         """
-        raise NotImplementedError
         rc = self._rc
         rc.PlotXS(river, reach, rs)
+        self._runtime.pause_text('Cross Section')
 
     def PlotXYZ(self, river, reach):
         """
@@ -1860,9 +1879,9 @@ class ControllerBase(object):
         reach : str
             The reach name.
         """
-        raise NotImplementedError
         rc = self._rc
         rc.PlotXYZ(river, reach)
+        self._runtime.pause_text('X-Y-Z Perspective Plot')
 
     # %% Project
     def Project_Current(self):
@@ -1883,18 +1902,9 @@ class ControllerBase(object):
         Filename : str
             Full path of the new HEC-RAS project.
         """
-        raise NotImplementedError
         rc = self._rc
-
-        # Check relative path to script
-        dirpath = osp.dirname(osp.abspath(Filename))
-        if osp.isdir(dirpath):
-            # Create directory recursively
-            os.makedirs(dirpath)
-        else:
-            fullpath = osp.abspath(Filename)
-
-        rc.Project_Open(title, fullpath)
+        fullpath = _create_dir(Filename)
+        rc.Project_New(title, fullpath)
 
     def Project_Open(self, ProjectFileName):
         """
@@ -1932,9 +1942,8 @@ class ControllerBase(object):
         newProjectName : str
             Path and file name of the HEC-RAS project to save as.
         """
-        raise NotImplementedError
         rc = self._rc
-        fullpath = osp.abspath(newProjectName)
+        fullpath = _create_dir(newProjectName)
         rc.Project_SaveAs(fullpath)
 
     # %% Schematic
@@ -2111,9 +2120,8 @@ class ControllerBase(object):
 
         Notes
         -----
-        Fr steady flow plans only.
+        For steady flow plans only.
         """
-        raise NotImplementedError
         rc = self._rc
         rc.SteadyFlow_ClearFlowData()
 
@@ -2138,9 +2146,9 @@ class ControllerBase(object):
         For steady flow plans only. The WSElev list contains fixed water
         surface elevations for each profile in the active plan's flow file.
         """
-        raise NotImplementedError
         rc = self._rc
-        rc.SteadyFlow_FixedWSBoundary(river, reach, Downstream, WSElev)
+        ws = [0] + list(WSElev)
+        rc.SteadyFlow_FixedWSBoundary(river, reach, Downstream, ws)
 
     def SteadyFlow_nProfile(self):
         """
@@ -2152,7 +2160,7 @@ class ControllerBase(object):
         For steady flow plans only.
         """
         rc = self._rc
-        res = rc.SteadyFlow_nProfile()
+        res = rc.SteadyFlow_nProfile
         return res
 
     def SteadyFlow_SetFlow(self, river, reach, rs, Flow):
@@ -2177,9 +2185,9 @@ class ControllerBase(object):
         the flow table, it will added. Need to first determine the number of
         profiles to set up the item count in the Flow array.
         """
-        raise NotImplementedError
         rc = self._rc
-        res = rc.SteadyFlow_SetFlow(river, reach, rs, Flow)
+        flow = [0] + list(Flow)
+        rc.SteadyFlow_SetFlow(river, reach, rs, flow)
 
     # %% Table
     def TablePF(self, river, reach):
@@ -2193,9 +2201,9 @@ class ControllerBase(object):
         reach : str
             The reach name.
         """
-        raise NotImplementedError
         rc = self._rc
-        res = rc.TablePF(river, reach)
+        rc.TablePF(river, reach)
+        self._runtime.pause_text('Profile Output Table')
 
     def TableXS(self, river, reach, rs):
         """
@@ -2211,9 +2219,9 @@ class ControllerBase(object):
         rs : str
             The river station.
         """
-#        raise NotImplementedError
         rc = self._rc
-        res = rc.TableXS(river, reach, rs)
+        rc.TableXS(river, reach, rs)
+        self._runtime.pause_text('Cross Section Output')
 
     # %% Unsteady
     def UnsteadyFlow_SetGateOpening_Constant(self, river, reach, rs, GateName,

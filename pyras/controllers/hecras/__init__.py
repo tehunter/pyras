@@ -29,7 +29,7 @@ def kill_ras():
         try:
             # FIXME:
             os.system('TASKKILL /PID {0} /F >nul'.format(pid))
-        except Exception, e:
+        except Exception as e:
             print(e)
 
 
@@ -162,7 +162,6 @@ def _get_registered_typelibs(match='HEC River Analysis System'):
             num = num + 1
     finally:
         win32api.RegCloseKey(key)
-    result = sorted(result)
     return result
 
 
@@ -174,7 +173,7 @@ class HECRASImportError(Exception):
             msg = message
 
         # Call the base class constructor with the parameters it needs
-        super(HECRASImportError, self).__init__(msg)    
+        super(HECRASImportError, self).__init__(msg)
 
 
 # %%
@@ -190,4 +189,3 @@ globals().pop('hecrasgeometry')
 globals().pop('win32api')
 globals().pop('win32con')
 globals().pop('runtime')
-globals().pop('os')

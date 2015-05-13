@@ -2,8 +2,8 @@
 """
 import win32com.client
 
-import ras41
-import ras500
+from . import ras41
+from . import ras500
 from .. import hecrasgeometry
 from ..runtime import Runtime
 
