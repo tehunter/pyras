@@ -7,6 +7,7 @@ import os
 
 import win32api
 import win32con
+from six import PY3
 
 
 def kill_ras():
@@ -15,7 +16,10 @@ def kill_ras():
 
     ras_process_string = 'ras.exe'
     proc = subprocess.Popen('TASKLIST /FO "CSV"', stdout=subprocess.PIPE)
-    tasklist = proc.stdout.read().split('\n')
+    if PY3:
+        tasklist = proc.stdout.read().decode('utf-8').split('\n')
+    else:
+        tasklist = proc.stdout.read().split('\n')
     tasks = []
     pids = []
     for line in tasklist:
@@ -93,9 +97,11 @@ def _get_typelib_info(keyid, version):
                             break
                         try:
                             hplatform = win32api.RegOpenKey(lcidkey, platform)
-                            fname, typ = win32api.RegQueryValueEx(hplatform, None)
+                            fname, typ = win32api.RegQueryValueEx(
+                                hplatform, None)
                             if typ == win32con.REG_EXPAND_SZ:
-                                fname = win32api.ExpandEnvironmentStrings(fname)
+                                fname = win32api.ExpandEnvironmentStrings(
+                                    fname)
                         except win32api.error:
                             fname = ""
                         collected.append((lcid, platform, fname))
@@ -166,6 +172,7 @@ def _get_registered_typelibs(match='HEC River Analysis System'):
 
 
 class HECRASImportError(Exception):
+
     def __init__(self, message=''):
         msg = '"HEC River Analysis System" type library not found. ' \
               'Please install HEC-RAS'
@@ -177,7 +184,7 @@ class HECRASImportError(Exception):
 
 
 # %%
-#kill_ras()
+# kill_ras()
 __available_versions__ = get_available_versions()
 
 from .hecrascontroller import RAS500

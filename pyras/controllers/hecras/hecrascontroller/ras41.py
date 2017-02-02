@@ -144,7 +144,7 @@ class ControllerDeprecated(object):
     def SetDataLocations(self, PlanTitle, count, LocationDesciptions, DSSFiles,
                          DSSPathnames):
         """
-        
+
         PlanTitle : str
 
         count : int
@@ -294,8 +294,8 @@ class ControllerBase(object):
         nmsg = None
         msg = None
         res = rc.Compute_CurrentPlan(nmsg, msg)
-        success, nmsg, msg = res
-
+        # success, nmsg, msg = res
+        success = res  # Changed 2/1/2017 Austin Orr for RAS503 compatability
         return success
 
     def Compute_HideComputationWindow(self):
@@ -938,8 +938,8 @@ class ControllerBase(object):
 
         geo = self.Geometry()
         nRS = geo.nNode(riv, rch)
-        rs = (float('nan'),)*(nRS + 1)
-        NodeType = (float('nan'),)*(nRS + 1)
+        rs = (float('nan'),) * (nRS + 1)
+        NodeType = (float('nan'),) * (nRS + 1)
 
         res = rc.Geometry_GetNodes(riv, rch, nRS, rs, NodeType)
         riv, rch, nRS, rs, NodeType = res
@@ -1438,7 +1438,7 @@ class ControllerBase(object):
         VarDesc = None
         res = rc.Output_Variables(nVar, VarName, VarDesc)
         nVar, VarName, VarDesc = res
-        ids = list(range(1, len(VarName)+1, 1))
+        ids = list(range(1, len(VarName) + 1, 1))
 
         return nVar, VarName, VarDesc
 
@@ -2008,12 +2008,12 @@ class ControllerBase(object):
         n_rivers = geo.nRiver()
         n_reaches = self.Schematic_ReachCount()
         n_points = self.Schematic_ReachPointCount()
-        RiverName_0 = ('',)*(n_rivers)
-        ReachName_0 = ('',)*(n_reaches)
-        ReachStartIndex_0 = (0,)*(n_reaches)
-        ReachPointCount_0 = (0,)*(n_reaches)
-        ReachPointX_0 = (0.0,)*(n_points)
-        ReachPointY_0 = (0.0,)*(n_points)
+        RiverName_0 = ('',) * (n_rivers)
+        ReachName_0 = ('',) * (n_reaches)
+        ReachStartIndex_0 = (0,) * (n_reaches)
+        ReachPointCount_0 = (0,) * (n_reaches)
+        ReachPointX_0 = (0.0,) * (n_points)
+        ReachPointY_0 = (0.0,) * (n_points)
 
         res = rc.Schematic_ReachPoints(RiverName_0, ReachName_0,
                                        ReachStartIndex_0, ReachPointCount_0,
@@ -2080,12 +2080,12 @@ class ControllerBase(object):
         rc = self._rc
         n_xs = self.Schematic_XSCount()
         n_points = self.Schematic_XSPointCount()
-        RSName_0 = ('',)*(n_xs)
-        ReachIndex_0 = (-1,)*(n_xs)
-        XSStartIndex_0 = (-1,)*(n_xs)
-        XSPointCount_0 = (-1,)*(n_xs)
-        XSPointX_0 = (float('nan'),)*(n_points)
-        XSPointY_0 = (float('nan'),)*(n_points)
+        RSName_0 = ('',) * (n_xs)
+        ReachIndex_0 = (-1,) * (n_xs)
+        XSStartIndex_0 = (-1,) * (n_xs)
+        XSPointCount_0 = (-1,) * (n_xs)
+        XSPointX_0 = (float('nan'),) * (n_points)
+        XSPointY_0 = (float('nan'),) * (n_points)
         res = rc.Schematic_XSPoints(RSName_0, ReachIndex_0, XSStartIndex_0,
                                     XSPointCount_0, XSPointX_0, XSPointY_0)
         (RSName_0, ReachIndex_0, XSStartIndex_0, XSPointCount_0,
@@ -2262,6 +2262,7 @@ class Controller(ControllerBase, ControllerAdded, ControllerDeprecated):
 
 
 class RASEvents:
+
     def HECRASController_ComputeProgressBar(self, Progress):
         """
         Repeatedly returns a single value between 0 and 1, indicating the

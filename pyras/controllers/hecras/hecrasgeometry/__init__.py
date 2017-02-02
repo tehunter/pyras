@@ -7,6 +7,7 @@ from . import ras500
 
 
 class RASGeometry(object):
+
     def __init__(self):
         super(RASGeometry, self).__init__()
         try:
@@ -19,6 +20,7 @@ class RASGeometry(object):
 
 class RAS41(RASGeometry, ras41.Geometry):
     """HEC-RAS Geometry version RAS41."""
+
     def __init__(self):
         self._ras_version = 'RAS41'
         self._ras = ras41
@@ -27,7 +29,8 @@ class RAS41(RASGeometry, ras41.Geometry):
 
 class RAS500(RASGeometry, ras500.Geometry):
     """HEC-RAS Geometry version RAS500."""
+
     def __init__(self):
-        self._ras_version = 'RAS500'
+        self._ras_version = 'RAS503'
         self._ras = ras500
         super(RAS500, self).__init__()

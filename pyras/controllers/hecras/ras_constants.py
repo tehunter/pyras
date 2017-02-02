@@ -661,11 +661,11 @@ def print_help(sort_alpha=False):
     doc = current_module.__doc__
 
     if sort_alpha:
-        break_ = '-'*79
+        break_ = '-' * 79
         start_table = doc.split('\n').index(break_) + 3
         content = doc.split('\n')[start_table:-1]
         last = ['  ---']
-        content += last*2
+        content += last * 2
 
         names = []
         dic = {}  # varname, lines
@@ -673,8 +673,8 @@ def print_help(sort_alpha=False):
         while True:
             line = content[i]
             name = line[2:].split(' ')[0]
-            line_next = content[i+1]
-            line_next_next = content[i+2]
+            line_next = content[i + 1]
+            line_next_next = content[i + 2]
 
             if line_next[2] != ' ':
                 i += 1
