@@ -1,5 +1,6 @@
 # Python compiled files
 *.py[ocd]
+.cache
 
 # C extensions
 *.so
