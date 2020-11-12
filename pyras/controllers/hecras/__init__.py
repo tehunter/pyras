@@ -40,7 +40,8 @@ def kill_ras():
 def get_available_versions():
     """ """
     ver = {'HEC-RAS\\4.1.0\\ras.exe': 'RAS41',
-           'HEC-RAS\\5.0 Beta 2014-10-01\\ras.exe': 'RAS500'}
+           'HEC-RAS\\5.0 Beta 2014-10-01\\ras.exe': 'RAS500',
+           'HEC-RAS\\5.0.7\\ras.exe': 'RAS507'}
 
     ldic = _get_registered_typelibs()
 
@@ -187,6 +188,7 @@ class HECRASImportError(Exception):
 # kill_ras()
 __available_versions__ = get_available_versions()
 
+from .hecrascontroller import RAS507
 from .hecrascontroller import RAS500
 from .hecrascontroller import RAS41
 

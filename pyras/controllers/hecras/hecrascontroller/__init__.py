@@ -4,6 +4,7 @@ import win32com.client
 
 from . import ras41
 from . import ras500
+from . import ras507
 from .. import hecrasgeometry
 from ..runtime import Runtime
 
@@ -88,3 +89,18 @@ class RAS500(RASController, ras500.Controller):
         self._ras = ras500
         self._geometry = hecrasgeometry.RAS500()
         super(RAS500, self).__init__(filename)
+
+class RAS507(RASController, ras507.Controller):
+    """HEC-RAS Controller version RAS507.
+
+    Parameters
+    ----------
+    filename : str
+        path to a HEC-RAS project file to open (*.prj).
+    """
+
+    def __init__(self, filename=None):
+        self._ras_version = 'RAS507'
+        self._ras = ras507
+        self._geometry = hecrasgeometry.RAS507()
+        super(RAS507, self).__init__(filename)

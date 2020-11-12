@@ -4,7 +4,7 @@ import win32com.client
 
 from . import ras41
 from . import ras500
-
+from . import ras507
 
 class RASGeometry(object):
 
@@ -34,3 +34,12 @@ class RAS500(RASGeometry, ras500.Geometry):
         self._ras_version = 'RAS503'
         self._ras = ras500
         super(RAS500, self).__init__()
+
+class RAS507(RASGeometry, ras507.Geometry):
+    """HEC-RAS Geometry version RAS507."""
+
+    def __init__(self):
+        self._ras_version = 'RAS507'
+        self._ras = ras507
+        super(RAS507, self).__init__()
+
